@@ -1,0 +1,18 @@
+{
+    "name": "chaud/klabs-cf7-to-pdf",
+    "description": "CF7 To PDF Converter",
+    "autoload": {
+        "psr-4": {
+            "Chaud\\KlabsCf7ToPdf\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "pragyan.chaudhary",
+            "email": "chaudharypragyan@gmail.com"
+        }
+    ],
+    "require": {
+        "mpdf/mpdf": "^8.2"
+    }
+}
