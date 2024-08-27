@@ -45,9 +45,8 @@ class CF7_TO_PDF
         global $wpdb;
         defined('CTP_PLUGIN_PATH') || define('CTP_PLUGIN_PATH', untrailingslashit(plugin_dir_path(__FILE__)));
         defined('CTP_PLUGIN_URI') || define('CTP_PLUGIN_URI', untrailingslashit(plugin_dir_url(__FILE__)));
-        defined('CTP_PLUGIN_BUILD_PATH') || define('CTP_PLUGIN_BUILD_PATH', untrailingslashit(plugin_dir_path(__FILE__)) . '/assets/build');
-        defined('CTP_PLUGIN_BUILD_URI') || define('CTP_PLUGIN_BUILD_URI', untrailingslashit(plugin_dir_url(__FILE__)) . '/assets/build');
-        defined('CTP_MEMBER_TABLE') || define('CTP_MEMBER_TABLE', $wpdb->prefix . 'ctp_members');
+        // defined('CTP_MEMBER_TABLE') || define('CTP_MEMBER_TABLE', $wpdb->prefix . 'ctp_members');
+        defined('CTP_FORM_ID') || define('CTP_FORM_ID', 466);
     }
 
     public function includes()
@@ -56,7 +55,7 @@ class CF7_TO_PDF
 
         require_once __DIR__ . '/vendor/autoload.php';
 
-        // require_once CTP_PLUGIN_PATH . '/inc/helpers/'
+        require_once CTP_PLUGIN_PATH . '/inc/helpers/utils.php';
     }
 
     public function plugin_loader()

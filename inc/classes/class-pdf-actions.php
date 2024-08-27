@@ -35,11 +35,26 @@ class PDF_Actions
 
         $uploaded_files = $submission->uploaded_files();
 
+        if ($uploaded_files) {
+            foreach ((array) $uploaded_files as $name => $path) {
+                if (! empty($path)) {
+                    $file_name = basename($path[0]);
+                    $msg_body = str_replace('[' . $name . ']', $file_name, $msg_body);
+                }
+            }
+        }
+
         $contact_id = $wpcf->id();
 
-        $cf7_pdf_download_link_txt = __('Click here to download PDF', 'generate-pdf-using-contact-form-7');
-        // print_r($posted_data);
-        // wp_die();
+        if ($contact_id != CTP_FORM_ID) {
+            return $wpcf;
+        }
+
+        $cf7_pdf_download_link_txt = __('Click here to download PDF', 'cf7-to-pdf');
+
+        $pdf_filename_prefix = 'CF7';
+        $current_time = microtime(true);
+        $current_time = str_replace(".", "-", $current_time);
 
         /**
          * Code to generate PDF
@@ -47,12 +62,13 @@ class PDF_Actions
         if (!class_exists('Mpdf')) {
             $margin_header = '10';
             $margin_footer = '10';
-            $margin_top = '40';
-            $margin_bottom = '40';
-            $margin_left = '40';
-            $margin_right = '40';
+            $margin_top = '16';
+            $margin_bottom = '16';
+            $margin_left = '15';
+            $margin_right = '15';
             $bg_image = '';
             $font_size = '9';
+
 
             $default = [
                 'default_font_size' => $font_size,
@@ -77,19 +93,51 @@ class PDF_Actions
             $mpdf->SetTitle(get_bloginfo('name'));
             $mpdf->SetCreator(get_bloginfo('name'));
             $mpdf->ignore_invalid_utf8 = true;
-            $msg_body = '';
-
-            $current_time = microtime(true);
-            $current_time = str_replace(".", "-", $current_time);
+            ob_start();
+            include(CTP_PLUGIN_PATH . '/inc/views/pdf-html.php');
+            $msg_body = ob_get_clean();
+            $stylesheet = file_get_contents(CTP_PLUGIN_PATH . '/assets/css/cf7-to-pdf.css');
+            $bootstrap_css = file_get_contents(CTP_PLUGIN_PATH . '/assets/css/mpdf-bootstrap.css');
 
             $html = $msg_body;
 
-            // Write some HTML code:
-            $mpdf->WriteHTML('Hello World');
+            $mpdf->WriteHTML($stylesheet, \Mpdf\HTMLParserMode::HEADER_CSS);
+            $mpdf->WriteHTML($bootstrap_css, \Mpdf\HTMLParserMode::HEADER_CSS);
+            $mpdf->WriteHTML($html);
 
-            // Output a PDF file directly to the browser
-            $mpdf->Output('hello.pdf', "D");
+            if (
+                $pdf_filename_prefix != ''
+            ) {
+                $pdf_file_name = $pdf_filename_prefix . '-' . $current_time . '.pdf';
+            } else {
+                $pdf_file_name = 'cf7-' . $contact_id . '-' . $current_time . '.pdf';
+            }
+
+            foreach ((array) $uploaded_files as $name => $path) {
+
+                if (! empty($path)) {
+                    $xmlFile = pathinfo($path[0]);
+                    $path_dir_cf7 =  $xmlFile['dirname'];
+                }
+            }
+
+            $attachment_data = $this->wpcf7_pdf_create_attachment($pdf_file_name);
+
+            // Output a PDF file directly
+            $mpdf->Output($attachment_data['absolute_path'], 'F');
+
+            if (!empty($attachment_data['attach_url'])) {
+                $cookie_name = "cf7_pdf_path";
+                $cookie_value = $attachment_data['attach_url'];
+                //86400 = 1 day
+                setcookie($cookie_name, $cookie_value, time() + (86400 * 1), "/");
+                //86400 = 1 day
+                setcookie('cf7_pdf_download_link_txt', $cf7_pdf_download_link_txt, time() + (86400 * 1), "/");
+                //86400 = 1 day
+                setcookie('wp-unit_tag', $unit_tag, time() + (86400 * 1), "/");
+            }
         }
+        return $wpcf;
     }
 
     public function wpcf7_pdf_create_attachment($filename)
@@ -121,7 +169,7 @@ class PDF_Actions
 
         $file = get_attached_file($attached_data['attach_id'], true);
         $size = 'full';
-        $attached_data['absolute_path'] = realpath($file);
+        $attached_data['absolute_path'] = $file;
 
         // Make sure that this file is included, as wp_generate_attachment_metadata() depends on it.
         require_once(ABSPATH . 'wp-admin/includes/image.php');
