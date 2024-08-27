@@ -21,7 +21,7 @@ foreach ($posted_data as $key => $value) :
 ?>
 		<div class="container">
 			<div class="row">
-				<div class="<?php echo esc_attr($wrapper_class['column']) ?>"><strong><?php echo $key ?></strong></div>
+				<div class="<?php echo esc_attr($wrapper_class['column']) ?>"><strong><?php echo get_labels($key) ?></strong></div>
 				<?php
 				if (is_array($value)) :
 					foreach ($value as $val_key => $val) :
