@@ -97,3 +97,28 @@ li {
   max-width: 30mm; /* Adjust as necessary */
   height: auto;
 }
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+  margin-bottom: 32px;
+}
+
+td,
+th {
+  border: 1px solid #dddddd;
+  text-align: left;
+  padding: 8px;
+}
+
+th {
+  text-transform: uppercase;
+}
+
+td.td-label {
+  font-weight: bold;
+}
+
+tr:nth-child(even) {
+  background-color: #f4f5f9;
+}

@@ -33,6 +33,8 @@ class PDF_Actions
         $unit_tag = $submission->get_meta('unit_tag');
         $posted_data = $submission->get_posted_data();
 
+        // print_r($posted_data);
+
         $uploaded_files = $submission->uploaded_files();
 
         if ($uploaded_files) {
@@ -67,7 +69,7 @@ class PDF_Actions
             $margin_left = '15';
             $margin_right = '15';
             $bg_image = '';
-            $font_size = '9';
+            $font_size = '10';
 
 
             $default = [
@@ -78,7 +80,7 @@ class PDF_Actions
                 'margin_top' => $margin_top,
                 'margin_footer' => $margin_footer,
                 'margin_bottom' => $margin_bottom,
-                'default_font' => 'FreeSans',
+                'default_font' => 'DejaVuSans',
                 'margin_left' => $margin_left,
                 'margin_right' => $margin_right,
             ];
@@ -97,12 +99,12 @@ class PDF_Actions
             include(CTP_PLUGIN_PATH . '/inc/views/pdf-html.php');
             $msg_body = ob_get_clean();
             $stylesheet = file_get_contents(CTP_PLUGIN_PATH . '/assets/css/cf7-to-pdf.css');
-            $bootstrap_css = file_get_contents(CTP_PLUGIN_PATH . '/assets/css/mpdf-bootstrap.css');
+            // $bootstrap_css = file_get_contents(CTP_PLUGIN_PATH . '/assets/css/mpdf-bootstrap.css');
 
             $html = $msg_body;
 
             $mpdf->WriteHTML($stylesheet, \Mpdf\HTMLParserMode::HEADER_CSS);
-            $mpdf->WriteHTML($bootstrap_css, \Mpdf\HTMLParserMode::HEADER_CSS);
+            // $mpdf->WriteHTML($bootstrap_css, \Mpdf\HTMLParserMode::HEADER_CSS);
             $mpdf->WriteHTML($html);
 
             if (
@@ -137,6 +139,8 @@ class PDF_Actions
                 setcookie('wp-unit_tag', $unit_tag, time() + (86400 * 1), "/");
             }
         }
+
+        wp_die();
         return $wpcf;
     }
 
