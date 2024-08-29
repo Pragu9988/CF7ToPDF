@@ -24,9 +24,10 @@ foreach ($grouped_data as $index => $data) {
 		echo get_step_9_table($data, $index);
 	} else if ($index === 'step_12') {
 		echo get_step_12_table($data, $index, $posted_data, $uploaded_files);
-	} else if ($index === 'step_13') {
-		echo get_step_13_table($posted_data, $uploaded_files, $index);
-	}
+	} 
+	// else if ($index === 'step_13') {
+	// 	echo get_step_13_table($posted_data, $uploaded_files, $index);
+	// }
 }
 
 include(CTP_PLUGIN_PATH . '/inc/views/partials/footer.php');

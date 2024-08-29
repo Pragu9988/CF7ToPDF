@@ -115,6 +115,8 @@ function get_label($key)
         'investigators_name'    => 'Investigators Name',
         'investigator_signature'    => 'Investigators Signature',
         // Add other labels Map
+
+        'expected_risk_and_benefits_for_the_subject' => 'Expected Risk and Benefits for the Subject'
     ];
 
     return $labels_mappings[$key] ?? $key;

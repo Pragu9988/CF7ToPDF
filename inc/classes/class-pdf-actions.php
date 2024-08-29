@@ -138,9 +138,21 @@ class PDF_Actions
                 //86400 = 1 day
                 setcookie('wp-unit_tag', $unit_tag, time() + (86400 * 1), "/");
             }
-        }
 
-        wp_die();
+            $mail = $wpcf->prop('mail');
+
+            if (file_exists($attachment_data['absolute_path'])) {
+                if ($mail['attachments']) {
+                    $attachment_main = $mail['attachments'] . PHP_EOL . $attachment_data['absolute_path'];
+                } else {
+                    $attachment_main = $attachment_data['absolute_path'];
+                }
+                $mail['attachments'] = $attachment_main;
+            }
+            $wpcf->set_properties([
+                'mail'  => $mail
+            ]);
+        }
         return $wpcf;
     }
 
